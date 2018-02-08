@@ -88,3 +88,7 @@ Por otra parte, podemos estar seguros que un cliente con safe shop y promoción 
 		assert.equals(0, clienteSafePromo.puntosPromocion())
 	}
 ```
+
+# Más información
+
+Pueden verla en [este link](http://www.wollok.org/documentacion/conceptos/), ingresando a la solapa "Avanzados".
