@@ -88,7 +88,7 @@ wollok.lang.Exception: Debe comprar por menos de 50
 
 La linearización consiste en aplanar la jerarquía considerando mixins y clases para formar el objeto que pertenece a la clase ClienteConSafeShop. 
 
-![image](LinearizationClientesTarjetaCredito.png)
+![image](images/LinearizationClientesTarjetaCredito.png)
 
 Aquí vemos que la clase ClienteConSafeShop 
 
@@ -141,7 +141,7 @@ wollok.lang.Exception: Debe comprar por menos de 50
 
 El proceso de linearización agrega el comportamiento de promoción, safe shop y cliente en ese orden: primero los mixins interceptan el comportamiento partiendo del último y terminando en el primero definido en la cláusula "mixed with". Luego se agregan las superclases de la jerarquía.
 
-![image](LinearizationClientesTarjetaCredito2.png)
+![image](images/LinearizationClientesTarjetaCredito2.png)
 
 El lector puede insertar console.println para comprobar cómo funciona.
 
