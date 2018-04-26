@@ -60,7 +60,98 @@ mixin Promocion {
 
 El uso de super(monto) no refiere a la herencia, sino al proceso de **linearización** que ocurre con posterioridad, en los tests. El mixin delega a una jerarquía que se completa en tiempo de ejecución, lo que le da una gran flexibilidad (y ciertamente un grado de indirección que puede dificultar el mantenimiento posterior).
 
-# Instanciar un cliente
+# Primera versión
+
+Si queremos modelar un cliente con safe shop podemos definir una clase específica
+
+- que herede el comportamiento de Cliente
+- pero que también agregue la funcionalidad del mixin SafeShop
+
+Esto puede hacerse de esta manera:
+
+```javascript
+class ClienteConSafeShop inherits Cliente mixed with SafeShop {}
+```
+
+Si jugamos un poco en el REPL vemos que esto funciona:
+
+```bash
+Wollok interactive console (type "quit" to quit):
+>>> const seguro = new ClienteConSafeShop()
+>>> seguro.montoMaximoSafeShop()
+50
+>>> seguro.comprar(60)
+wollok.lang.Exception: Debe comprar por menos de 50
+   at wollok.lib.error.throwWithMessage(aMessage) (classpath:/wollok/lib.wlk:465)
+   at clientes.SafeShop.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:17)
+```
+
+La linearización consiste en aplanar la jerarquía considerando mixins y clases para formar el objeto que pertenece a la clase ClienteConSafeShop. 
+
+![image](LinearizationClientesTarjetaCredito.png)
+
+Aquí vemos que la clase ClienteConSafeShop 
+
+- aplica las definiciones del mixin SafeShop
+- y luego hereda de la clase Cliente
+
+Los mixins no pueden instanciarse, ni tienen constructores, su finalidad es participar en objetos que no tienen una jerarquía común.
+
+Como consecuencia, en la clase ClienteConSafeShop tenemos acceso a las referencias de Cliente, pero también a las que define SafeShop:
+
+
+```javascript
+class ClienteConSafeShop inherits Cliente mixed with SafeShop {
+	
+	method deudaEnRojo() = deuda - montoMaximoSafeShop 
+
+}
+```
+
+Lo probamos en la consola
+
+```bash
+>>> const seguro = new ClienteConSafeShop()
+>>> seguro.deudaEnRojo()
+-50
+```
+
+# Combinaciones de condiciones comerciales
+
+Para combinar Safe Shop y Promocion podemos crear una clase ad-hoc:
+
+```javascript
+class ClienteConSafeShopYPromocion inherits Cliente mixed with SafeShop, Promocion { }
+```
+
+Nuevamente hacemos la prueba en la consola REPL:
+
+```bash
+Wollok interactive console (type "quit" to quit):
+>>> const mixto = new ClienteConSafeShopYPromocion()
+>>> mixto.comprar(60)
+wollok.lang.Exception: Debe comprar por menos de 50
+   at wollok.lib.error.throwWithMessage(aMessage) (classpath:/wollok/lib.wlk:465)
+   at clientes.SafeShop.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:17)
+   at clientes.Promocion.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:29)
+>>> mixto.comprar(40)
+>>> mixto.puntosPromocion()
+15
+```
+
+El proceso de linearización agrega el comportamiento de promoción, safe shop y cliente en ese orden: primero los mixins interceptan el comportamiento partiendo del último y terminando en el primero definido en la cláusula "mixed with". Luego se agregan las superclases de la jerarquía.
+
+![image](LinearizationClientesTarjetaCredito2.png)
+
+El lector puede insertar console.println para comprobar cómo funciona.
+
+# Implementaciones similares
+
+Los __traits__ de Scala funcionan de forma análoga a los mixins de Wollok. Les dejamos [un link](http://docs.scala-lang.org/tour/traits.html) a la documentación oficial.
+
+La creación de clases puede resultar un tanto tediosa cuando no necesitamos agregar funcionalidad extra, sino simplemente construir un objeto que tenga promoción, safe shop, ambos o ninguno de esos agregados. Afortunadamente Wollok prevé este tipo de escenarios, que vamos a ver a continuación.
+
+# Testeo unitario - creación de instancias ad-hoc
 
 En el test puede verse cómo crear un cliente con safe shop y otro que combina ambos mixins:
 

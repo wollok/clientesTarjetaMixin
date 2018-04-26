@@ -34,3 +34,11 @@ mixin Promocion {
 	}
 }
 
+class ClienteConSafeShop inherits Cliente mixed with SafeShop {
+	
+	method deudaEnRojo() = deuda - montoMaximoSafeShop 
+
+}
+
+
+class ClienteConSafeShopYPromocion inherits Cliente mixed with SafeShop, Promocion { }
