@@ -3,7 +3,8 @@ import clientes.*
 describe "tests de clientes" {
 
 	const clienteSafeShop = new Cliente() with SafeShop
-	const clienteSafePromo = new Cliente() with Promocion with SafeShop
+	const clienteSafePromo = new Cliente() 
+		with Promocion with SafeShop
 		
 	test "cliente con safe shop compra por poco bien" {
 		clienteSafeShop.comprar(10)

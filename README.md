@@ -121,14 +121,14 @@ Lo probamos en la consola
 Para combinar Safe Shop y Promocion podemos crear una clase ad-hoc:
 
 ```javascript
-class ClienteConSafeShopYPromocion inherits Cliente mixed with SafeShop, Promocion { }
+class ClienteMixto inherits Cliente mixed with SafeShop, Promocion { }
 ```
 
 Nuevamente hacemos la prueba en la consola REPL:
 
 ```bash
 Wollok interactive console (type "quit" to quit):
->>> const mixto = new ClienteConSafeShopYPromocion()
+>>> const mixto = new ClienteMixto()
 >>> mixto.comprar(60)
 wollok.lang.Exception: Debe comprar por menos de 50
    at wollok.lib.error.throwWithMessage(aMessage) (classpath:/wollok/lib.wlk:465)

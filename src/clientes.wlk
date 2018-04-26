@@ -42,3 +42,4 @@ class ClienteConSafeShop inherits Cliente mixed with SafeShop {
 
 
 class ClienteConSafeShopYPromocion inherits Cliente mixed with SafeShop, Promocion { }
+
