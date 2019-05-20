@@ -1,4 +1,7 @@
 # Clientes de una tarjeta de crédito
+ 
+[![Build Status](https://travis-ci.org/wollok/clientesTarjetaMixin.svg?branch=master)](https://travis-ci.org/wollok/clientesTarjetaMixin)
+
 
 El proyecto cuenta cómo agregar comportamiento a un objeto en forma dinámica.
 
