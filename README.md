@@ -43,7 +43,7 @@ mixin SafeShop {
 	
 	method comprar(monto) {
 		if (monto > montoMaximoSafeShop) {
-			error.throwWithMessage("Debe comprar por menos de " + montoMaximoSafeShop)
+			throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
 		}
 		super(monto)
 	}
@@ -85,8 +85,7 @@ Wollok interactive console (type "quit" to quit):
 50
 >>> seguro.comprar(60)
 wollok.lang.Exception: Debe comprar por menos de 50
-   at wollok.lib.error.throwWithMessage(aMessage) (classpath:/wollok/lib.wlk:465)
-   at clientes.SafeShop.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:17)
+   at clientes.SafeShop.comprar(monto) (/home/dodain/workspace/wollok-2020/clientesTarjetaMixin/src/clientes.wlk:17)
 ```
 
 La linearización consiste en aplanar la jerarquía considerando mixins y clases para formar el objeto que pertenece a la clase ClienteConSafeShop. 

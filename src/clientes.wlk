@@ -41,5 +41,8 @@ class ClienteConSafeShop inherits Cliente mixed with SafeShop {
 }
 
 
+// Linearización
+// ClienteConSafeShopYPromocion => Promocion => SafeShop => Cliente
 class ClienteConSafeShopYPromocion inherits Cliente mixed with SafeShop, Promocion { }
+class ClienteConSafeShopYPromocion2 inherits Cliente mixed with Promocion, SafeShop { }
 
