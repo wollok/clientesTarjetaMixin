@@ -14,7 +14,7 @@ mixin SafeShop {
 		console.println("SafeShop - comprar")
 		if (monto > montoMaximoSafeShop) {
 			console.println("SafeShop - Validación falló")
-			error.throwWithMessage("Debe comprar por menos de " + montoMaximoSafeShop)
+			throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
 		}
 		console.println("SafeShop - Validación ok")
 		super(monto)
