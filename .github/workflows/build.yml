@@ -20,6 +20,10 @@ jobs:
         shell: bash
       - run: export PATH="$PATH:./wollok-cli"
         shell: bash
+      - run: ls -la
+        shell: bash
+      - run: cat $PATH
+        shell: bash
       - run: wollok test
         shell: bash
-        
+
