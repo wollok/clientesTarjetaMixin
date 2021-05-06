@@ -16,6 +16,10 @@ jobs:
           java-version: 14
 
       # Execute Gradle commands in GitHub Actions workflows
-      - git clone https://github.com/uqbar-project/wollok-cli
-      - export PATH="$PATH:./wollok-cli"
-      - wollok test
+      - run: git clone https://github.com/uqbar-project/wollok-cli
+        shell: bash
+      - run: export PATH="$PATH:./wollok-cli"
+        shell: bash
+      - run: wollok test
+        shell: bash
+        
