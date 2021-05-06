@@ -17,9 +17,7 @@ jobs:
 
       # Execute Gradle commands in GitHub Actions workflows
       - run: |
-          cd $GITHUB_WORKSPACE/
           git clone https://github.com/uqbar-project/wollok-cli
-          echo "::add-path::$GITHUB_WORKSPACE/wollok-cli"
-          wollok test
+          wollok-cli/wollok test
         shell: bash
 
