@@ -8,24 +8,24 @@ describe "tests de clientes" {
 	test "cliente con safe shop compra por poco bien" {
 		clienteSafeShop.comprar(10)
 		assert.equals(10, clienteSafeShop.deuda())
-		console.println("")
+		console.println("-------------------------------------------------------------")
 	}
 
 	test "cliente con safe shop no puede comprar por mucho" {
 		assert.throwsExceptionWithMessage("Debe comprar por menos de 50", { clienteSafeShop.comprar(150) })
-		console.println("")
+		console.println("-------------------------------------------------------------")
 	}
 
 	test "cliente con safe shop y promoción no puede comprar por mucho" {
 		assert.throwsExceptionWithMessage("Debe comprar por menos de 50", { clienteSafePromo.comprar(150) })
 		assert.equals(0, clienteSafePromo.puntosPromocion())
-		console.println("")
+		console.println("-------------------------------------------------------------")
 	}
 
 	test "cliente con safe shop y promoción compra, valida y suma puntos promo" {
 		clienteSafePromo.comprar(25)
 		assert.equals(15, clienteSafePromo.puntosPromocion())
-		console.println("")
+		console.println("-------------------------------------------------------------")
 	}
 	
 }
