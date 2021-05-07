@@ -9,6 +9,14 @@ on: [push, pull_request]
 jobs:
   gradle:
     runs-on: ubuntu-latest
+    - uses: actions/checkout@v2
+    - name: Cache wollok-cli
+      id: cache-wollok-cli
+      uses: actions/cache@v2
+      with:
+        path: wollok-cli
+        key: ${{ runner.os }}-wollok-cli
+
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
