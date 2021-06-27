@@ -26,7 +26,7 @@ Las soluciones posibles que cuenta el apunte son
 
 Los mixins de Wollok permiten definir comportamiento sin atarlo a una clase o wko. En este caso dada la clase Cliente
 
-```javascript
+```js
 class Cliente {
 	var property deuda = 0
 	method comprar(monto) {
@@ -37,7 +37,7 @@ class Cliente {
 
 sin afectar directamente al cliente generamos dos mixins, uno con cada agregado nuevo:
 
-```javascript
+```js
 mixin SafeShop {
 	var property montoMaximoSafeShop = 50
 	
@@ -73,7 +73,7 @@ Si queremos modelar un cliente con safe shop podemos definir una clase específi
 Esto puede hacerse de esta manera:
 
 ```javascript
-class ClienteConSafeShop inherits Cliente mixed with SafeShop {}
+class ClienteConSafeShop inherits SafeShop and Cliente {}
 ```
 
 Si jugamos un poco en el REPL vemos que esto funciona:
@@ -103,10 +103,8 @@ Como consecuencia, en la clase ClienteConSafeShop tenemos acceso a las referenci
 
 
 ```javascript
-class ClienteConSafeShop inherits Cliente mixed with SafeShop {
-	
+class ClienteConSafeShop inherits SafeShop and Cliente {
 	method deudaEnRojo() = deuda - montoMaximoSafeShop 
-
 }
 ```
 
@@ -123,7 +121,7 @@ Lo probamos en la consola
 Para combinar Safe Shop y Promocion podemos crear una clase ad-hoc:
 
 ```javascript
-class ClienteMixto inherits Cliente mixed with SafeShop, Promocion { }
+class ClienteMixto inherits Promocion and SafeShop and Cliente { }
 ```
 
 Nuevamente hacemos la prueba en la consola REPL:
@@ -141,11 +139,48 @@ wollok.lang.Exception: Debe comprar por menos de 50
 15
 ```
 
-El proceso de linearización agrega el comportamiento de promoción, safe shop y cliente en ese orden: primero los mixins interceptan el comportamiento partiendo del último y terminando en el primero definido en la cláusula "mixed with". Luego se agregan las superclases de la jerarquía.
+El proceso de linearización agrega el comportamiento de promoción, safe shop y cliente en el mismo orden en que se define la clase:
+
+```javascript
+class ClienteMixto inherits SafeShop and Promocion and Cliente { }
+```
 
 ![image](images/LinearizationClientesTarjetaCredito2.png)
 
 El lector puede insertar console.println para comprobar cómo funciona.
+
+## Reglas para utilizar inherits en Wollok
+
+- primero los mixines, por último la superclase (es opcional): una clase puede tomar definiciones de tantos mixines como quiera. 
+
+```wollok
+class A {}
+mixin M1 {}
+mixin M2 {}
+class C inherits M1 and M2 and A {} // CORRECTO: la superclase de C es A
+class C2 inherits M1 and M2 {}      // CORRECTO: la superclase de C2 es Object
+```
+
+- no se puede tener más de una superclase en la definición inherits
+
+```wollok
+class A {}
+class B {}
+class C inherits A and B {} // INCORRECTO: solo puede heredar de A o B
+```
+
+- no se puede entremezclar mixines y superclase, la superclase debe estar al final de la definición.
+
+```wollok
+class A {}
+mixin M1 {}
+mixin M2 {}
+class C inherits M1 and A and M2 {}  // INCORRECTO: la superclase A debe estar al final
+class C2 inherits A and M1 and M2 {} // INCORRECTO: la superclase A debe estar al final
+class C inherits M1 and M2 and A {}  // CORRECTO
+```
+
+- el orden en el que se ejecutan los métodos es el mismo que se escribe la linearización, en el caso de ClienteConSafeShop es primero ClienteConSafeShop, luego SafeShop y por último Cliente.
 
 # Implementaciones similares
 
@@ -155,13 +190,13 @@ La creación de clases puede resultar un tanto tediosa cuando no necesitamos agr
 
 # Testeo unitario - creación de instancias ad-hoc
 
-En el test puede verse cómo crear un cliente con safe shop y otro que combina ambos mixins:
+En el test puede verse cómo crear un objeto cliente con safe shop y otro que combina ambos mixins:
 
 ```javascript
 describe "tests de clientes" {
 
-	const clienteSafeShop = new Cliente() with SafeShop
-	const clienteSafePromo = new Cliente() with Promocion with SafeShop
+	const clienteSafeShop = object inherits SafeShop(montoMaximoSafeShop = 20) and Cliente(deuda = 20) {}
+	const clienteSafePromo = object inherits SafeShop(montoMaximoSafeShop = 70) and Promocion and Cliente {}
 ```
 
 Los mixins no son solo polimórficos con el cliente, también agregan comportamiento y propiedades, como se puede ver en este test que verifica los puntos de promoción:
@@ -177,7 +212,7 @@ Por otra parte, podemos estar seguros que un cliente con safe shop y promoción 
 
 ```javascript
 	test "cliente con safe shop y promoción no puede comprar por mucho" {
-		assert.throwsExceptionWithMessage("Debe comprar por menos de 50", { clienteSafePromo.comprar(150) })
+		assert.throwsExceptionWithMessage("Debe comprar por menos de 70", { clienteSafePromo.comprar(150) })
 		assert.equals(0, clienteSafePromo.puntosPromocion())
 	}
 ```
