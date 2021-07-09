@@ -38,7 +38,6 @@ class ClienteConSafeShop inherits SafeShop and Cliente {
 	method deudaEnRojo() = deuda - montoMaximoSafeShop 
 }
 
-
 // Linearización
 // ClienteConSafeShopYPromocion => Promocion => SafeShop => Cliente
 class ClienteConSafeShopYPromocion inherits Promocion and SafeShop and Cliente { }
