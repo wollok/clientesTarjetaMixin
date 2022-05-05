@@ -142,7 +142,7 @@ wollok.lang.Exception: Debe comprar por menos de 50
 El proceso de linearización agrega el comportamiento de promoción, safe shop y cliente en el mismo orden en que se define la clase:
 
 ```javascript
-class ClienteMixto inherits SafeShop and Promocion and Cliente { }
+class ClienteMixto inherits Promocion and SafeShop and Cliente { }
 ```
 
 ![image](images/LinearizationClientesTarjetaCredito2.png)
