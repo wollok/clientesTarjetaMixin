@@ -75,21 +75,26 @@ Esto puede hacerse de esta manera:
 class ClienteConSafeShop inherits SafeShop and Cliente {}
 ```
 
-Si jugamos un poco en el REPL vemos que esto funciona:
+Si jugamos un poco en el REPL vemos cómo funciona:
 
 ```bash
-Wollok interactive console (type "quit" to quit):
->>> const seguro = new ClienteConSafeShop()
->>> seguro.montoMaximoSafeShop()
+> const seguro = new ClienteConSafeShop()
+> seguro.montoMaximoSafeShop()
 50
->>> seguro.comprar(60)
-wollok.lang.Exception: Debe comprar por menos de 50
-   at clientes.SafeShop.comprar(monto) (/home/dodain/workspace/wollok-2020/clientesTarjetaMixin/src/clientes.wlk:17)
+> seguro.comprar(60)
+✗ Evaluation Error!
+  wollok.lang.Exception: Debe comprar por menos de 50
+    at If [clientes.wlk:15]
+    at clientes.SafeShop.comprar(monto) [clientes.wlk:13]
 ```
 
-La linearización consiste en aplanar la jerarquía considerando mixins y clases para formar el objeto que pertenece a la clase ClienteConSafeShop. 
+La linearización consiste en aplanar la jerarquía considerando mixins y clases para formar el objeto que pertenece a la clase ClienteConSafeShop.
 
 ![image](images/LinearizationClientesTarjetaCredito.png)
+
+Pero atención, que en memoria solo hay un objeto que toma todas las definiciones (en esto la linearización se asemeja a la herencia):
+
+![clienteConSafeShop en diagrama dinámico](./images/safeShopDiagramaDinamico.png)
 
 Aquí vemos que la clase ClienteConSafeShop 
 
@@ -110,8 +115,8 @@ class ClienteConSafeShop inherits SafeShop and Cliente {
 Lo probamos en la consola
 
 ```bash
->>> const seguro = new ClienteConSafeShop()
->>> seguro.deudaEnRojo()
+> const seguro = new ClienteConSafeShop()
+> seguro.deudaEnRojo()
 -50
 ```
 
@@ -127,14 +132,15 @@ Nuevamente hacemos la prueba en la consola REPL:
 
 ```bash
 Wollok interactive console (type "quit" to quit):
->>> const mixto = new ClienteMixto()
->>> mixto.comprar(60)
-wollok.lang.Exception: Debe comprar por menos de 50
-   at wollok.lib.error.throwWithMessage(aMessage) (classpath:/wollok/lib.wlk:465)
-   at clientes.SafeShop.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:17)
-   at clientes.Promocion.comprar(monto) (/home/fernando/workspace/wollok-2018/clientesTarjetaMixin/src/clientes.wlk:29)
->>> mixto.comprar(40)
->>> mixto.puntosPromocion()
+> const mixto = new ClienteMixto()
+> mixto.comprar(60)
+✗ Evaluation Error!
+  wollok.lang.Exception: Debe comprar por menos de 50
+    at If [clientes.wlk:15]
+    at clientes.SafeShop.comprar(monto) [clientes.wlk:13]
+    at clientes.Promocion.comprar(monto) [clientes.wlk:27]
+> mixto.comprar(40)
+> mixto.puntosPromocion()
 15
 ```
 
@@ -193,26 +199,33 @@ En el test puede verse cómo crear un objeto cliente con safe shop y otro que co
 
 ```javascript
 describe "tests de clientes" {
+  const clienteSafeShop = 
+    object 
+      inherits SafeShop(montoMaximoSafeShop = 20) 
+      and Cliente(deuda = 20) {}
 
-	const clienteSafeShop = object inherits SafeShop(montoMaximoSafeShop = 20) and Cliente(deuda = 20) {}
-	const clienteSafePromo = object inherits SafeShop(montoMaximoSafeShop = 70) and Promocion and Cliente {}
+  const clienteSafePromo = 
+    object 
+      inherits SafeShop(montoMaximoSafeShop = 70)
+      and Promocion
+      and Cliente {}
 ```
 
 Los mixins no son solo polimórficos con el cliente, también agregan comportamiento y propiedades, como se puede ver en este test que verifica los puntos de promoción:
 
 ```javascript
 	test "cliente con safe shop y promoción compra, valida y suma puntos promo" {
-		clienteSafePromo.comprar(25)
-		assert.equals(15, clienteSafePromo.puntosPromocion())
+    clienteSafePromo.comprar(25)
+    assert.equals(15, clienteSafePromo.puntosPromocion())
 	}
 ```
 
 Por otra parte, podemos estar seguros que un cliente con safe shop y promoción no suma los puntos de promoción si el mixin de safe shop detecta que sobrepasó el máximo permitido, ya que el orden de las delegaciones con super está bien implementado:
 
 ```javascript
-	test "cliente con safe shop y promoción no puede comprar por mucho" {
-		assert.throwsExceptionWithMessage("Debe comprar por menos de 70", { clienteSafePromo.comprar(150) })
-		assert.equals(0, clienteSafePromo.puntosPromocion())
+  test "cliente con safe shop y promoción no puede comprar por mucho" {
+    assert.throwsExceptionWithMessage("Debe comprar por menos de 70", { clienteSafePromo.comprar(150) })
+    assert.equals(0, clienteSafePromo.puntosPromocion())
 	}
 ```
 
