@@ -214,19 +214,19 @@ describe "tests de clientes" {
 Los mixins no son solo polimórficos con el cliente, también agregan comportamiento y propiedades, como se puede ver en este test que verifica los puntos de promoción:
 
 ```javascript
-	test "cliente con safe shop y promoción compra, valida y suma puntos promo" {
-    clienteSafePromo.comprar(25)
-    assert.equals(15, clienteSafePromo.puntosPromocion())
-	}
+test "cliente con safe shop y promoción compra, valida y suma puntos promo" {
+  clienteSafePromo.comprar(25)
+  assert.equals(15, clienteSafePromo.puntosPromocion())
+}
 ```
 
 Por otra parte, podemos estar seguros que un cliente con safe shop y promoción no suma los puntos de promoción si el mixin de safe shop detecta que sobrepasó el máximo permitido, ya que el orden de las delegaciones con super está bien implementado:
 
 ```javascript
-  test "cliente con safe shop y promoción no puede comprar por mucho" {
-    assert.throwsExceptionWithMessage("Debe comprar por menos de 70", { clienteSafePromo.comprar(150) })
-    assert.equals(0, clienteSafePromo.puntosPromocion())
-	}
+test "cliente con safe shop y promoción no puede comprar por mucho" {
+  assert.throwsExceptionWithMessage("Debe comprar por menos de 70", { clienteSafePromo.comprar(150) })
+  assert.equals(0, clienteSafePromo.puntosPromocion())
+}
 ```
 
 # Más información
