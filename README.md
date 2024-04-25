@@ -27,10 +27,10 @@ Los mixins de Wollok permiten definir comportamiento sin atarlo a una clase o wk
 
 ```js
 class Cliente {
-	var property deuda = 0
-	method comprar(monto) {
-		deuda = deuda + monto
-	}
+  var property deuda = 0
+  method comprar(monto) {
+    deuda = deuda + monto
+  }
 }
 ```
 
@@ -38,25 +38,25 @@ sin afectar directamente al cliente generamos dos mixins, uno con cada agregado 
 
 ```js
 mixin SafeShop {
-	var property montoMaximoSafeShop = 50
-	
-	method comprar(monto) {
-		if (monto > montoMaximoSafeShop) {
-			throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
-		}
-		super(monto)
-	}
+  var property montoMaximoSafeShop = 50
+  
+  method comprar(monto) {
+    if (monto > montoMaximoSafeShop) {
+      throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
+    }
+    super(monto)
+  }
 }
 
 mixin Promocion {
-	var property puntosPromocion = 0
-	
-	method comprar(monto) {
-		super(monto)
-		if (monto > 20) {
-			puntosPromocion = puntosPromocion + 15
-		}
-	}
+  var property puntosPromocion = 0
+  
+  method comprar(monto) {
+    super(monto)
+    if (monto > 20) {
+      puntosPromocion = puntosPromocion + 15
+    }
+  }
 }
 ```
 
@@ -108,7 +108,7 @@ Como consecuencia, en la clase ClienteConSafeShop tenemos acceso a las referenci
 
 ```javascript
 class ClienteConSafeShop inherits SafeShop and Cliente {
-	method deudaEnRojo() = deuda - montoMaximoSafeShop 
+  method deudaEnRojo() = deuda - montoMaximoSafeShop 
 }
 ```
 
