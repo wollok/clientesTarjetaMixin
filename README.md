@@ -231,4 +231,4 @@ test "cliente con safe shop y promoción no puede comprar por mucho" {
 
 # Más información
 
-Pueden verla en [este link]([http://www.wollok.org/documentacion/conceptos/](https://www.wollok.org/documentation/advanced/), ingresando a la solapa "Avanzados".
+Pueden verla en [este link](https://www.wollok.org/documentation/advanced/), ingresando a la solapa "Avanzados".
