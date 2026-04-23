@@ -2,8 +2,8 @@ import clientes.*
 
 describe "tests de clientes" {
 
-	const clienteSafeShop = object inherits SafeShop(montoMaximoSafeShop = 20) and Cliente(deuda = 20) {}
-	const clienteSafePromo = object inherits SafeShop(montoMaximoSafeShop = 70) and Promocion and Cliente {}
+	const clienteSafeShop = object inherits SafeShop(montoMaximo = 20) and Cliente(deuda = 20) {}
+	const clienteSafePromo = object inherits SafeShop(montoMaximo = 70) and Promocion and Cliente {}
 		
 	test "cliente con safe shop compra por poco bien" {
 		clienteSafeShop.comprar(10)

@@ -8,13 +8,13 @@ class Cliente {
 }
 
 mixin SafeShop {
-	var property montoMaximoSafeShop = 50
+	var property montoMaximo = 50
 	
 	method comprar(monto) {
 		console.println("SafeShop - comprar")
-		if (monto > montoMaximoSafeShop) {
+		if (monto > montoMaximo) {
 			console.println("SafeShop - Validación falló")
-			throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
+			throw new Exception(message = "Debe comprar por menos de " + montoMaximo)
 		}
 		console.println("SafeShop - Validación ok")
 		super(monto)
@@ -35,7 +35,7 @@ mixin Promocion {
 }
 
 class ClienteConSafeShop inherits SafeShop and Cliente {
-	method deudaEnRojo() = deuda - montoMaximoSafeShop 
+	method deudaEnRojo() = deuda - montoMaximo 
 }
 
 // Linearización

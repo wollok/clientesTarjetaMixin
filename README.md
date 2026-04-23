@@ -38,11 +38,11 @@ sin afectar directamente al cliente generamos dos mixins, uno con cada agregado 
 
 ```js
 mixin SafeShop {
-  var property montoMaximoSafeShop = 50
+  var property montoMaximo = 50
   
   method comprar(monto) {
-    if (monto > montoMaximoSafeShop) {
-      throw new Exception(message = "Debe comprar por menos de " + montoMaximoSafeShop)
+    if (monto > montoMaximo) {
+      throw new Exception(message = "Debe comprar por menos de " + montoMaximo)
     }
     super(monto)
   }
@@ -79,7 +79,7 @@ Si jugamos un poco en el REPL vemos cómo funciona:
 
 ```bash
 > const seguro = new ClienteConSafeShop()
-> seguro.montoMaximoSafeShop()
+> seguro.montoMaximo()
 50
 > seguro.comprar(60)
 ✗ Evaluation Error!
@@ -108,7 +108,7 @@ Como consecuencia, en la clase ClienteConSafeShop tenemos acceso a las referenci
 
 ```javascript
 class ClienteConSafeShop inherits SafeShop and Cliente {
-  method deudaEnRojo() = deuda - montoMaximoSafeShop 
+  method deudaEnRojo() = deuda - montoMaximo 
 }
 ```
 
@@ -201,12 +201,12 @@ En el test puede verse cómo crear un objeto cliente con safe shop y otro que co
 describe "tests de clientes" {
   const clienteSafeShop = 
     object 
-      inherits SafeShop(montoMaximoSafeShop = 20) 
+      inherits SafeShop(montoMaximo = 20) 
       and Cliente(deuda = 20) {}
 
   const clienteSafePromo = 
     object 
-      inherits SafeShop(montoMaximoSafeShop = 70)
+      inherits SafeShop(montoMaximo = 70)
       and Promocion
       and Cliente {}
 ```
